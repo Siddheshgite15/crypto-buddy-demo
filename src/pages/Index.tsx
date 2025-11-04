@@ -13,7 +13,6 @@ const Index = () => {
     portfolioData, 
     addTransaction, 
     updatePrices, 
-    randomizePrices, 
     resetPrices 
   } = usePortfolio();
 
@@ -27,14 +26,9 @@ const Index = () => {
     toast.info('Market dip: Prices decreased by 3% 📉');
   };
 
-  const handleRandomize = () => {
-    randomizePrices();
-    toast('Prices randomized! 🎲');
-  };
-
   const handleReset = () => {
     resetPrices();
-    toast('Prices reset to original values');
+    toast('Prices refreshed from Binance');
   };
 
   return (
@@ -68,7 +62,6 @@ const Index = () => {
               <SimulationControls
                 onIncrease={handleIncrease}
                 onDecrease={handleDecrease}
-                onRandomize={handleRandomize}
                 onReset={handleReset}
               />
             </div>

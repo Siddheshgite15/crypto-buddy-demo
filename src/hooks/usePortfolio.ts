@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Transaction, Coin, PortfolioData, Holding } from '@/types/portfolio';
 import { mockCoins } from '@/lib/mockData';
+import { supabase } from '@/integrations/supabase/client';
 
 const STORAGE_KEY = 'cryptopilot-transactions';
 const PRICES_KEY = 'cryptopilot-prices';
@@ -21,6 +22,13 @@ export const usePortfolio = () => {
     if (savedPrices) {
       setCoins(JSON.parse(savedPrices));
     }
+
+    // Fetch real-time prices from Binance
+    fetchBinancePrices();
+    
+    // Update prices every 30 seconds
+    const interval = setInterval(fetchBinancePrices, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   // Save to localStorage when transactions change
@@ -45,6 +53,33 @@ export const usePortfolio = () => {
     setTransactions(prev => prev.filter(t => t.id !== id));
   };
 
+  const fetchBinancePrices = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('fetch-binance-prices');
+      
+      if (error) {
+        console.error('Error fetching Binance prices:', error);
+        return;
+      }
+
+      if (data?.prices) {
+        setCoins(prev => prev.map(coin => {
+          const binancePrice = data.prices.find((p: any) => p.id === coin.id);
+          if (binancePrice) {
+            return {
+              ...coin,
+              currentPrice: binancePrice.currentPrice,
+              change24h: binancePrice.change24h
+            };
+          }
+          return coin;
+        }));
+      }
+    } catch (error) {
+      console.error('Error fetching prices:', error);
+    }
+  };
+
   const updatePrices = (changePercent: number) => {
     setCoins(prev => prev.map(coin => ({
       ...coin,
@@ -53,19 +88,8 @@ export const usePortfolio = () => {
     })));
   };
 
-  const randomizePrices = () => {
-    setCoins(prev => prev.map(coin => {
-      const change = (Math.random() - 0.5) * 10; // -5% to +5%
-      return {
-        ...coin,
-        currentPrice: coin.currentPrice * (1 + change / 100),
-        change24h: change
-      };
-    }));
-  };
-
   const resetPrices = () => {
-    setCoins(mockCoins);
+    fetchBinancePrices();
   };
 
   const portfolioData: PortfolioData = useMemo(() => {
@@ -124,7 +148,7 @@ export const usePortfolio = () => {
     addTransaction,
     deleteTransaction,
     updatePrices,
-    randomizePrices,
-    resetPrices
+    resetPrices,
+    fetchBinancePrices
   };
 };
