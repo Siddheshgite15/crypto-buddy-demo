@@ -53,6 +53,7 @@ const Index = () => {
 
           <PortfolioStats
             totalValue={portfolioData.totalValue}
+            totalInvestment={portfolioData.totalInvestment}
             totalProfitLoss={portfolioData.totalProfitLoss}
             totalProfitLossPercentage={portfolioData.totalProfitLossPercentage}
           />

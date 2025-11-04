@@ -110,6 +110,7 @@ export const usePortfolio = () => {
 
     return {
       totalValue,
+      totalInvestment: totalCost,
       totalProfitLoss,
       totalProfitLossPercentage,
       holdings

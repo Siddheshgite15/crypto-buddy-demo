@@ -3,15 +3,16 @@ import { Card, CardContent } from '@/components/ui/card';
 
 interface PortfolioStatsProps {
   totalValue: number;
+  totalInvestment: number;
   totalProfitLoss: number;
   totalProfitLossPercentage: number;
 }
 
-const PortfolioStats = ({ totalValue, totalProfitLoss, totalProfitLossPercentage }: PortfolioStatsProps) => {
+const PortfolioStats = ({ totalValue, totalInvestment, totalProfitLoss, totalProfitLossPercentage }: PortfolioStatsProps) => {
   const isProfit = totalProfitLoss >= 0;
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid gap-4 md:grid-cols-3">
       <Card className="overflow-hidden">
         <CardContent className="p-6">
           <div className="flex items-center gap-2 text-muted-foreground mb-2">
@@ -20,6 +21,18 @@ const PortfolioStats = ({ totalValue, totalProfitLoss, totalProfitLossPercentage
           </div>
           <p className="text-3xl font-bold text-foreground">
             ${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card className="overflow-hidden">
+        <CardContent className="p-6">
+          <div className="flex items-center gap-2 text-muted-foreground mb-2">
+            <DollarSign className="h-4 w-4" />
+            <span className="text-sm font-medium">Total Investment</span>
+          </div>
+          <p className="text-3xl font-bold text-foreground">
+            ${totalInvestment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
         </CardContent>
       </Card>

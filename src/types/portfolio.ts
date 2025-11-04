@@ -26,6 +26,7 @@ export interface Holding {
 
 export interface PortfolioData {
   totalValue: number;
+  totalInvestment: number;
   totalProfitLoss: number;
   totalProfitLossPercentage: number;
   holdings: Holding[];
